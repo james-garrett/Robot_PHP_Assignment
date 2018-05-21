@@ -50,6 +50,8 @@
 			}
 			return $arrow;
 		}
+
+
 	}
 
 	$doc = new DOMDocument;
@@ -69,12 +71,14 @@
 	$form = createForm($doc);
 
 	$body->appendChild($form);
+	$placed = false;
 	$doc->appendChild($body);
 	echo $doc->saveHTML();
 	
 
 	if(isset($_POST["command"])) {	
-		parsePlaceInstruction($doc, $form, $body);
+		$commandReceived = $_POST["command"];
+		parseCommand($commandReceived, $placed, null);
 	}
 
 	function createForm($doc) {
@@ -153,13 +157,42 @@
 		return "<div>" . $output . "</div>";
 	}
 
-	function parseCommand($command) {
+	function parseCommand($command, $placed, $instructions) {
+		global $doc, $body, $form;
 		// get textCommand from $_POST["form"]
 		// if(textCommand && textCommand.length > 5)
 		// length > 5 because PLACE is always first
 		//grab elements, separate by space
 		//if first command not place, ignore rest
-		if(strlen($command) < 5) {
+			if(strpos($command, 'PLACE') !== false) {
+				$instructions = parsePlaceInstruction($doc, $form, $body, $command);
+
+			//These commands are only accessible if we've already placed the robot
+			} else if($placed) {
+				if(strpos($command, 'LEFT') !== false ||
+			  		 strpos($command, 'RIGHT') !== false){
+					$instructions->turn($instructions->facing, $command);
+				} else if(strpos($command, 'MOVE') !== false) {
+
+				} else if(strpos($command, 'REPORT') !== false) {
+
+				} else if(strpos($command, 'Output:') !== false) {
+
+			}
+		}
+	}
+
+	function parsePlaceInstruction($doc, $form, $body, $command) {
+		// global $doc, $form, $body;
+		$placeholder = $_POST["command"];
+
+	 	$div = $doc->createElement('div', $placeholder);
+	 	$textEntry = $doc->createElement('p', $placeholder);
+	 	// $div->appendChild($textEntry);
+	 	$doc->appendChild($div);
+	 	
+	 	$instructionSet = new placementInstructions();
+	 	if(strlen($command) < 5) {
 			echo "string";
 			//Command too short 
 			return;
@@ -193,9 +226,7 @@
 			} else {
 				array_push($instructionSet->coordinates, $commandArray[$i]);
 			}
-		}
-		return $instructionSet;
-		
+		}	
 
 
 		//___________________PLACE, X, Y, F_________________
@@ -213,6 +244,22 @@
 		//Can only be string type
 		//NORTH, SOUTH, EAST or WEST
 		//Must be all-caps
+	 	// $instructionSet = parseCommand($placeholder);
+
+	 	echo printStart($instructionSet);
+		// $placeholder = $doc->getElementsByTagName('command')[0];
+		// $formsToRemove = $doc->getElementById('cursor');
+		// echo $formsToRemove->nodeValue;
+		// foreach($formsToRemove as $form) {
+			// $formParent = $formsToRemove->parentNode;
+			// $formParent->removeChild($formsToRemove);	
+		// }
+		
+		setAttr($doc, 'input', 'placeholder', 'Enter next Instructions');
+
+		// $form = $doc->getElementsByTagName('command')[0];
+		// setAttr($doc, 'input', 'placeholder', 'Enter next Instructions');
+		return $instructionSet;
 	}
 
 	function setAttr($node, $tag, $attr, $val) {
@@ -222,31 +269,42 @@
 		echo $node->saveHTML();
 	}
 
-	function parsePlaceInstruction($doc, $form, $body) {
-		// global $doc, $form, $body;
-		$placeholder = $_POST["command"];
 
-	 	$div = $doc->createElement('div', $placeholder);
-	 	$textEntry = $doc->createElement('p', $placeholder);
-	 	// $div->appendChild($textEntry);
-	 	$doc->appendChild($div);
-	 	
-	 	$instructionSet = new placementInstructions();
-	 	$instructionSet = parseCommand($placeholder);
-	 	echo printStart($instructionSet);
-		// $placeholder = $doc->getElementsByTagName('command')[0];
-		$formsToRemove = $doc->getElementById('cursor');
-		echo $formsToRemove->nodeValue;
-		// foreach($formsToRemove as $form) {
-			$formParent = $formsToRemove->parentNode;
-			$formParent->removeChild($formsToRemove);	
-		// }
-		
-		setAttr($doc, 'input', 'placeholder', 'Enter next Instructions');
-
-		// $form = $doc->getElementsByTagName('command')[0];
-		// setAttr($doc, 'input', 'placeholder', 'Enter next Instructions');
+	function turn($direction, $facing) {
+		if($direction == 'LEFT') {
+			switch($facing) {
+				case 'NORTH':
+					$facing = 'WEST';
+					break;
+				case 'SOUTH': 
+					$facing = 'EAST';
+					break;
+				case 'EAST': 
+					$facing = 'NORTH';
+					break;
+				case 'WEST':
+					$facing = 'SOUTH';
+					break;
+			}
+		} else if ($direction == 'RIGHT') {
+			switch($facing) {
+				case 'NORTH':
+					$facing = 'EAST';
+					break;
+				case 'SOUTH': 
+					$facing = 'WEST';
+					break;
+				case 'EAST': 
+					$facing = 'SOUTH';
+					break;
+				case 'WEST':
+					$facing = 'NORTH';
+					break;
+			}
+		}
+		return $facing;
 	}
+
 	?>
 <!-- </body>
 </html> -->
