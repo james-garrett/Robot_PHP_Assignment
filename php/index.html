@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../css/index.css" type="text/css">
+<?php include 'app.php'; ?>
+<meta name="Author" content="YOUR NAME HERE">
+<meta name="Keywords" content="KEYWORD1, KEYWORD2, KEYWORD3">
+<meta name="Description" content="BRIEF DESCRIPTION OF PAGE HERE.">
+<title>TITLE HERE</title>
+</head>
+<body>
+<div>
+
+	</div>
+	<br>
+<div id="content">
+
+</div>
+	<div class="cursor">
+	<form name="form" action="" method="POST">
+	<div id='stream'>*************</div>
+	<span>></span>
+		<input name='command' type="text" class="rq-form-element" placeholder="Enter Commands Here" autofocus/>
+		</form>
+	<i></i>
+</div>
+<div id="footer">
+Last revised: 
+<?php
+putenv("TZ=America/Los_Angeles");
+echo date("m/d/y", filemtime($_SERVER["SCRIPT_FILENAME"]));
+?>
+</div>
+
+</body>
+</html>

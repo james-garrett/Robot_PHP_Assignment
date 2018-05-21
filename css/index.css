@@ -1,0 +1,57 @@
+
+body {
+	background-image: url("../Assets/bg2.png");
+	font: bold 20px monospace;
+	color: #14F074;
+	position: absolute;
+	bottom: 0px;
+	/*font-family: robotFont;*/
+}
+
+/*.cursor {
+    position: relative;
+}
+.cursor i {
+    position: absolute;
+    width: 10px;
+    height: 80%;
+    background-color: gray;
+    left: 20px;
+    top: 10%;
+    animation-name: blink;
+    animation-duration: 800ms;
+    animation-iteration-count: infinite;
+    opacity: 1;
+}*/
+
+.cursor input:focus + i {
+    display: none;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+input {
+	background: transparent;
+	color: #14F074;
+	font: bold 20px monospace;
+    border-color: transparent;
+    border-style: none;
+    border: none;
+    width: 98%;
+
+}
+
+
+
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+
+@font-face {
+	font-family: robotFont;
+	src: url("../Fonts/monofonto.ttf");
+}
